@@ -1,36 +1,71 @@
 .MODEL SMALL
 .STACK 100H
+
 .DATA
-ARR DB 1,2,3,4,5,6 
+NEWLINE DB 0AH,0DH,'$'
+MSG2 DB 'REVERSE :$'
+ARR DW 100 DUP(0)
+N DW ?
 
-.CODE
+.CODE 
 MAIN PROC
-    MOV AX, @DATA
-    MOV DS, AX
+    MOV AX,@DATA
+    MOV DS,AX
     
-    MOV SI, 0
-    MOV DI, 0
-    XOR CX, CX
-    XOR BX, BX
-    MOV CX, 3
-;MOV DI, ARR_SIZE
-    MOV DI, 6
-    DEC DI ;di = 5
-REVERSE:
-    MOV BL, ARR[SI] ;1
-    MOV BH, ARR[DI] ;6
-    MOV ARR[SI], BH ;6
-    MOV ARR[DI], BL ;1
-    INC SI
-    DEC DI
-    LOOP REVERSE  
+    ; ------- INPUT N -------
+    CALL INDEC
+    MOV N,AX
+    PUSH AX
+    MOV AH,9
+    LEA DX,NEWLINE
+    INT 21H 
+    POP AX
+    
+    ; ------- INPUT ARRAY -------
+    MOV CX,N
+    LEA SI,ARR 
+    
+INPUT: 
+    CALL INDEC 
+    PUSH AX 
+    MOV AH,9
+    LEA DX,NEWLINE
+    INT 21H
+    POP AX
+    MOV [SI],AX
+    ADD SI,2
+    
+    LOOP INPUT 
+    
+                                            
+    MOV CX,N
+    LEA SI,ARR 
+    REVERSE:
+    MOV AX,[SI]
+    PUSH AX
+    ADD SI,2
+    
+    LOOP REVERSE
+    
+    
+    MOV AH,9
+    LEA DX,MSG2
+    INT 21H
+           
+   MOV CX,N
+    
+    PRINT:
+    POP AX   
+    CALL OUTDEC 
 
-  
-END_:
-MOV AH, 4CH
-INT 21H    
+    LOOP PRINT
+
+    MOV AH,4CH
+    INT 21H
+    
 MAIN ENDP
 INCLUDE INDEC.ASM
 INCLUDE OUTDEC.ASM
 END MAIN
+
 
