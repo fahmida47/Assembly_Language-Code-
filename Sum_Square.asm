@@ -1,0 +1,36 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+SUM DW 0
+N DW ?
+NEW_LINE DB 0DH,0AH,'$'
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    
+    CALL INDEC
+    MOV N,AX
+    
+    MOV CX,AX
+    
+    SUM_LOOP:
+    MOV AX,CX
+    MUL CX
+    ADD SUM,AX
+    LOOP SUM_LOOP
+    
+    MOV AH,9
+    LEA DX,NEW_LINE
+    INT 21H
+    MOV AX,SUM
+    
+    CALL OUTDEC
+    
+    MOV AH,4CH
+    INT 21H
+    
+    MAIN ENDP 
+INCLUDE INDEC.ASM
+INCLUDE OUTDEC.ASM
+END MAIN
