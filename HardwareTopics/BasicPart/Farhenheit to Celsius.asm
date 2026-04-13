@@ -1,0 +1,9 @@
+;2 NO
+;CONVERSION FARHENHEIT TO CELSIUS
+MOV AL, 110      
+SUB AL, 32       
+MOV BL, 5
+MUL BL            
+MOV CL, 9
+DIV CL          
+INT 3     
